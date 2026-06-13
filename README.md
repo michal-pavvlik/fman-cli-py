@@ -1,4 +1,4 @@
-# fman - CLI File Manager
+# filman - CLI File Manager
 
 Lightweight file manager, made with Python, created specifically for Linux terminal envirnonment.
 

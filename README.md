@@ -4,7 +4,7 @@ Lightweight file manager, made with Python, created specifically for Linux termi
 
 ## 🚀 Features
 
-`fman` provides a streamlined interface for core system operations:
+`filman` provides a streamlined interface for core system operations:
 * **Add:** Create new files instantly
 * **Delete:** Remove files from the system
 * **Edit:** Modify file contents directly in CLI

@@ -13,6 +13,17 @@ def main():
         while(int(operation_id) not in operations_possibilities):
             print("Wrong input, write down a value from 1 to 5")
             operation_id = input()
-
+        match int(operation_id):
+            case 1:
+                pass
+            case 2:
+                pass
+            case 3:
+                pass
+            case 4:
+                pass
+            case 5:
+                print("Shutting down the program.")
+                return
 if __name__ == "__main__":
     main()

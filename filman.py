@@ -1,3 +1,5 @@
+import os
+
 print("""    ____________    __  ______    _   __
    / ____/  _/ /   /  |/  /   |  / | / /
   / /_   / // /   / /|_/ / /| | /  |/ / 
@@ -5,6 +7,14 @@ print("""    ____________    __  ______    _   __
 /_/   /___/_____/_/  /_/_/  |_/_/ |_/  """)
 
 operations_possibilities = range(1,6)
+
+def addNewFile():
+    new_file_name = input("Name of the file to create (with format): ")
+    if(os.path.isfile(new_file_name)):
+        print("File alerady exists!")
+        return
+    with open(new_file_name, 'w') as nf:
+        pass
 
 def main():
     while(True):
@@ -15,7 +25,7 @@ def main():
             operation_id = input()
         match int(operation_id):
             case 1:
-                pass
+                addNewFile()
             case 2:
                 pass
             case 3:

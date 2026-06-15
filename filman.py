@@ -11,7 +11,7 @@ operations_possibilities = range(1,6)
 def addNewFile():
     new_file_name = input("Name of the file to create (with format): ")
     if(os.path.isfile(new_file_name)):
-        print("File alerady exists!")
+        print("File already exists!")
         return
     with open(new_file_name, 'w') as nf:
         pass

@@ -38,6 +38,16 @@ def editFile():
         pass
     print(f"File {to_edit_file_name} overwritten successfully.")
 
+def changeCWD():
+    to_change_cwd_name = input("New directory name: ")
+    dir_not_exists = not(os.path.isdir(to_change_cwd_name))
+    if(dir_not_exists):
+        print("This directory does not exist!")
+        return
+    os.chdir(to_change_cwd_name)
+    print(f"Changed current working directory to {to_change_cwd_name}.")
+
+
 def main():
     while(True):
         print("What operation would you like to do:\n1. Add file\n2. Delete file\n3. Edit file\n4. Change directory\n5. Exit")
@@ -53,7 +63,7 @@ def main():
             case 3:
                 editFile()
             case 4:
-                pass
+                changeCWD()
             case 5:
                 print("Shutting down the program.")
                 return

@@ -10,7 +10,7 @@ print("""    ____________    __  ______    _   __
 /_/   /___/_____/_/  /_/_/  |_/_/ |_/  """)
 
 
-# Implementation of command design-pattern
+# Implementation of command design pattern
 class Command(ABC):
 
     @abstractmethod

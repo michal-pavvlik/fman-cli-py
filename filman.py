@@ -25,6 +25,9 @@ class AddFileCommand(Command):
 
     def execute(self) -> None:
         self._receiver.addFile(self._filename)
+    
+    def undo(self) -> None:
+        self._receiver.deleteFile(self._filename)
 
 class deleteFileCommand(Command):
 
@@ -37,6 +40,10 @@ class deleteFileCommand(Command):
         self._deleted_data = self._receiver.getFileContent(self._filename)
         self._receiver.deleteFile(self._filename)
 
+    def undo(self) -> None:
+        self._receiver.addFile(self._filename)
+        self._receiver.editFile(self._filename, self._deleted_data)
+
 class editFileCommand(Command):
 
     def __init__(self, receiver: Receiver, filename: str, file_data: str) -> None:
@@ -48,6 +55,9 @@ class editFileCommand(Command):
     def execute(self) -> None:
         self._old_file_data = self._receiver.getFileContent(self._filename)
         self._receiver.editFile(self._filename, self._file_data)
+    
+    def undo(self) -> None:
+        self._receiver.editFile(self._filename, self._old_file_data)
 
 class changeCwdCommand(Command):
 
@@ -60,6 +70,8 @@ class changeCwdCommand(Command):
         self._old_cwd = os.getcwd()
         self._receiver.changeCwd(self._dirname)
 
+    def undo(self) -> None:
+        self._receiver.changeCwd(self._old_cwd)
 
 class Receiver:
 
@@ -105,24 +117,30 @@ class Receiver:
 class Invoker:
 
     def __init__(self) -> None:
-        self.commands_history = deque([])
+        self._commands_history = deque([])
 
     def doCommand(self, command: Command) -> None:
         command.execute()
-        if(len(self.commands_history) >= 10):
-            self.commands_history.popleft()
-        self.commands_history.append(command)
+        if(len(self._commands_history) >= 10):
+            self._commands_history.popleft()
+        self._commands_history.append(command)
 
+    def undoCommand(self) -> None:
+        if(len(self._commands_history) == 0):
+            print("There are no commands to undo!")
+            return
+        previous_command = self._commands_history.pop()
+        previous_command.undo()
 
 def main():
-    operations_possibilities = range(1,6)
+    operations_possibilities = range(1,7)
     invoker = Invoker()
     receiver = Receiver()
     while(True):
-        print("What operation would you like to do:\n1. Add file\n2. Delete file\n3. Edit file\n4. Change directory\n5. Exit")
+        print("What operation would you like to do:\n1. Add file\n2. Delete file\n3. Edit file\n4. Change directory\n5. Undo command\n6. Exit")
         while(True):
             try:
-                operation_id = int(input("Write down a value from 1 to 5: "))
+                operation_id = int(input("Write down a value from 1 to 6: "))
                 if operation_id not in operations_possibilities:
                     print("Input out of range")
                 else:
@@ -144,6 +162,8 @@ def main():
                 filename = input("write down desired directory name: ")
                 invoker.doCommand(changeCwdCommand(receiver, filename))
             case 5:
+                invoker.undoCommand()
+            case 6:
                 print("Shutting down the program.")
                 return
 

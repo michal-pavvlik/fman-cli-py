@@ -31,8 +31,11 @@ class deleteFileCommand(Command):
     def __init__(self, receiver: Receiver, filename: str) -> None:
         self._receiver = receiver
         self._filename = filename
+        self._deleted_data = None
 
     def execute(self) -> None:
+        self._deleted_data = self._receiver.getFileContent(self._filename)
+        print(self._deleted_data)
         self._receiver.deleteFile(self._filename)
 
 class editFileCommand(Command):
@@ -41,8 +44,11 @@ class editFileCommand(Command):
         self._receiver = receiver
         self._filename = filename
         self._file_data = file_data
+        self._old_file_data = None
 
     def execute(self) -> None:
+        self._old_file_data = self._receiver.getFileContent(self._filename)
+        print(self._old_file_data)
         self._receiver.editFile(self._filename, self._file_data)
 
 class changeCwdCommand(Command):
@@ -50,8 +56,11 @@ class changeCwdCommand(Command):
     def __init__(self, receiver: Receiver, dirname: str) -> None:
         self._receiver = receiver
         self._dirname = dirname
+        self._old_cwd = None
 
     def execute(self) -> None:
+        self._old_cwd = os.getcwd()
+        print(self._old_cwd)
         self._receiver.changeCwd(self._dirname)
 
 
@@ -92,6 +101,9 @@ class Receiver:
         os.chdir(dirname)
         print(f"Changed current working directory to {dirname}.")
 
+    def getFileContent(self, filename):
+        with open(filename, "r") as f:
+            return f.read()
 
 class Invoker:
 

@@ -73,6 +73,19 @@ class changeCwdCommand(Command):
     def undo(self) -> None:
         self._receiver.changeCwd(self._old_cwd)
 
+class moveFileCommand(Command):
+    
+    def __init__(self, receiver: Receiver, source_file: str, dest_file: str) -> None:
+        self._receiver = receiver
+        self._source_file = source_file
+        self._dest_file = dest_file
+    
+    def execute(self) -> None:
+        self._receiver.moveFile(self._source_file, self._dest_file)
+    
+    def undo(self) -> None:
+        self._receiver.moveFile(self._dest_file, self._source_file)
+
 class Receiver:
 
     def addFile(self, filename: str) -> None:
@@ -110,7 +123,15 @@ class Receiver:
         os.chdir(dirname)
         print(f"Changed current working directory to {dirname}.")
 
-    def getFileContent(self, filename):
+    def moveFile(self, source_file: str, dest_file: str) -> None:
+        file_not_exists = not(os.path.isfile(source_file))
+        if(file_not_exists):
+            print("Wrong source file!")
+            return
+        os.rename(source_file, dest_file)
+        
+
+    def getFileContent(self, filename, dirname):
         with open(filename, "r") as f:
             return f.read()
 
@@ -133,14 +154,14 @@ class Invoker:
         previous_command.undo()
 
 def main():
-    operations_possibilities = range(1,7)
+    operations_possibilities = range(1,8)
     invoker = Invoker()
     receiver = Receiver()
     while(True):
-        print("What operation would you like to do:\n1. Add file\n2. Delete file\n3. Edit file\n4. Change directory\n5. Undo command\n6. Exit")
+        print("What operation would you like to do:\n1. Add file\n2. Delete file\n3. Edit file\n4. Change directory\n5. Move file\n6. Undo command\n7. Exit")
         while(True):
             try:
-                operation_id = int(input("Write down a value from 1 to 6: "))
+                operation_id = int(input("Write down a value from 1 to 7: "))
                 if operation_id not in operations_possibilities:
                     print("Input out of range")
                 else:
@@ -162,8 +183,12 @@ def main():
                 filename = input("write down desired directory name: ")
                 invoker.doCommand(changeCwdCommand(receiver, filename))
             case 5:
-                invoker.undoCommand()
+                source_file = input("write down file with full path: ")
+                dest_file = input("write down destination directory: ")
+                invoker.doCommand(moveFileCommand(receiver, source_file, dest_file))
             case 6:
+                invoker.undoCommand()
+            case 7:
                 print("Shutting down the program.")
                 return
 
